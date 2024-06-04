@@ -73,6 +73,7 @@ const moveHighlight = () => {
         currentIndex++
       } else {
         currentDirectionIndex = (currentDirectionIndex + 1) % 4
+        currentIndex += cols // 立即更新 currentIndex
       }
       break
     case 'down':
@@ -80,6 +81,7 @@ const moveHighlight = () => {
         currentIndex += cols
       } else {
         currentDirectionIndex = (currentDirectionIndex + 1) % 4
+        currentIndex-- // 立即更新 currentIndex
       }
       break
     case 'left':
@@ -87,6 +89,7 @@ const moveHighlight = () => {
         currentIndex--
       } else {
         currentDirectionIndex = (currentDirectionIndex + 1) % 4
+        currentIndex -= cols // 立即更新 currentIndex
       }
       break
     case 'up':
@@ -94,6 +97,7 @@ const moveHighlight = () => {
         currentIndex -= cols
       } else {
         currentDirectionIndex = (currentDirectionIndex + 1) % 4
+        currentIndex++ // 立即更新 currentIndex
       }
       break
   }
