@@ -14,7 +14,7 @@
       </div>
     </div>
     <div class="button-container">
-      <button @click="highlightRandomCell">Highlight Random Cell</button>
+      <button @click="startHighlighting">Start Highlighting</button>
     </div>
   </div>
 </template>
@@ -29,6 +29,7 @@ setGridSize(10)
 
 // State for highlighted index
 const highlightedIndex = ref<number | null>(null)
+let interval: number | undefined
 
 // Example image URLs array (you can replace these with your own images)
 const images = [
@@ -53,11 +54,81 @@ const gridItems = computed(() => {
   return items
 })
 
-const highlightRandomCell = () => {
-  const edgeIndices = gridItems.value
-    .map((item, index) => (item.isHollow ? null : index))
-    .filter(index => index !== null) as number[]
-  highlightedIndex.value = edgeIndices[Math.floor(Math.random() * edgeIndices.length)]
+const directions = ['right', 'down', 'left', 'up'] as const
+let currentDirectionIndex = 0
+let currentIndex = 0
+const steps = ref(0)
+const maxSteps = ref(40)
+
+const moveHighlight = () => {
+  const rows = gridSize.value
+  const cols = gridSize.value
+
+  const row = Math.floor(currentIndex / cols)
+  const col = currentIndex % cols
+
+  switch (directions[currentDirectionIndex]) {
+    case 'right':
+      if (col < cols - 1) {
+        currentIndex++
+      } else {
+        currentDirectionIndex = (currentDirectionIndex + 1) % 4
+      }
+      break
+    case 'down':
+      if (row < rows - 1) {
+        currentIndex += cols
+      } else {
+        currentDirectionIndex = (currentDirectionIndex + 1) % 4
+      }
+      break
+    case 'left':
+      if (col > 0) {
+        currentIndex--
+      } else {
+        currentDirectionIndex = (currentDirectionIndex + 1) % 4
+      }
+      break
+    case 'up':
+      if (row > 0) {
+        currentIndex -= cols
+      } else {
+        currentDirectionIndex = (currentDirectionIndex + 1) % 4
+      }
+      break
+  }
+
+  highlightedIndex.value = currentIndex
+}
+
+const startHighlighting = () => {
+  currentDirectionIndex = 0
+  currentIndex = 0
+  steps.value = 0
+  maxSteps.value = 40 // Reset maxSteps
+
+  if (interval !== null) {
+    clearInterval(interval)
+  }
+
+  interval = window.setInterval(() => {
+    if (steps.value >= maxSteps.value) {
+      if (interval !== null) {
+        clearInterval(interval)
+      }
+      // Gradually slow down
+      interval = window.setInterval(() => {
+        if (maxSteps.value < 80) {
+          maxSteps.value++
+        } else {
+          clearInterval(interval)
+        }
+      }, 100)
+    } else {
+      moveHighlight()
+      steps.value++
+    }
+  }, 100)
 }
 </script>
 
