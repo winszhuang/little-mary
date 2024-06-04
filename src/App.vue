@@ -1,6 +1,11 @@
 <template>
   <div class="grid-container">
-    <GridItem v-for="(item, index) in gridItems" :key="index" :isHollow="item.isHollow" />
+    <GridItem
+      v-for="(item, index) in gridItems"
+      :key="index"
+      :isHollow="item.isHollow"
+      :image="item.image"
+    />
     <div class="center-content">
       <!-- 在这里插入你想要的图片或动画 -->
       <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ_FWF2judaujT30K9sMf-tZFhMWpgP6xCemw&s" alt="Center Image" />
@@ -16,12 +21,24 @@ import gridSize, { setGridSize } from './config/config'
 // Set initial grid size
 setGridSize(10)
 
+// Example image URLs array (you can replace these with your own images)
+const images = [
+  'https://cdn-icons-png.flaticon.com/512/4436/4436481.png',
+  'https://cdn-icons-png.flaticon.com/512/4436/4436481.png',
+  'https://uxwing.com/wp-content/themes/uxwing/download/hand-gestures/good-icon.png',
+  'https://cdn-icons-png.flaticon.com/512/4436/4436481.png',
+  'https://cdn-icons-png.flaticon.com/512/4436/4436481.png',
+  'https://cdn-icons-png.flaticon.com/512/4436/4436481.png'
+  // ... add as many URLs as needed
+]
+
 const gridItems = computed(() => {
   const items = []
   for (let row = 0; row < gridSize.value; row++) {
     for (let col = 0; col < gridSize.value; col++) {
       const isEdgeCell = row === 0 || row === gridSize.value - 1 || col === 0 || col === gridSize.value - 1
-      items.push({ isHollow: !isEdgeCell })
+      const image = isEdgeCell ? images[(row * gridSize.value + col) % images.length] : ''
+      items.push({ isHollow: !isEdgeCell, image })
     }
   }
   return items
