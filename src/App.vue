@@ -59,9 +59,9 @@ let currentDirectionIndex = 0
 let currentIndex = 0
 const steps = ref(0)
 const maxSteps = ref(40)
-let delay = 50 // 更快的初始延遲
-const delayIncrement = 20 // 更大的延遲增量
-const maxDelay = 1000
+let delay = 10 // 更快的初始延遲
+let delayIncrement = 1 // 更小的初始延遲增量
+const maxDelay = 1000 // 更大的最大延遲
 
 const moveHighlight = () => {
   const rows = gridSize.value
@@ -114,7 +114,8 @@ const startHighlighting = () => {
   currentIndex = 0
   steps.value = 0
   maxSteps.value = 40
-  delay = 50 // 更快的初始延遲
+  delay = 10 // 更快的初始延遲
+  delayIncrement = 1 // 更小的初始延遲增量
 
   if (timeout !== undefined) {
     clearTimeout(timeout)
@@ -128,6 +129,7 @@ const startHighlighting = () => {
     } else {
       moveHighlight()
       delay += delayIncrement
+      delayIncrement *= 1.1 // 延遲增量隨著時間的推移而逐漸增大
       if (delay >= maxDelay) {
         clearTimeout(timeout)
         timeout = undefined
