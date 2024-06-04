@@ -29,7 +29,7 @@ setGridSize(10)
 
 // State for highlighted index
 const highlightedIndex = ref<number | null>(null)
-let interval: number | undefined
+let timeout: number | undefined
 
 // Example image URLs array (you can replace these with your own images)
 const images = [
@@ -59,6 +59,9 @@ let currentDirectionIndex = 0
 let currentIndex = 0
 const steps = ref(0)
 const maxSteps = ref(40)
+let delay = 50 // 更快的初始延遲
+const delayIncrement = 20 // 更大的延遲增量
+const maxDelay = 1000
 
 const moveHighlight = () => {
   const rows = gridSize.value
@@ -103,36 +106,38 @@ const moveHighlight = () => {
   }
 
   highlightedIndex.value = currentIndex
+  steps.value++
 }
 
 const startHighlighting = () => {
   currentDirectionIndex = 0
   currentIndex = 0
   steps.value = 0
-  maxSteps.value = 40 // Reset maxSteps
+  maxSteps.value = 40
+  delay = 50 // 更快的初始延遲
 
-  if (interval !== null) {
-    clearInterval(interval)
+  if (timeout !== undefined) {
+    clearTimeout(timeout)
+    timeout = undefined
   }
 
-  interval = window.setInterval(() => {
+  const highlightLoop = () => {
     if (steps.value >= maxSteps.value) {
-      if (interval !== null) {
-        clearInterval(interval)
-      }
-      // Gradually slow down
-      interval = window.setInterval(() => {
-        if (maxSteps.value < 80) {
-          maxSteps.value++
-        } else {
-          clearInterval(interval)
-        }
-      }, 100)
+      clearTimeout(timeout)
+      timeout = undefined
     } else {
       moveHighlight()
-      steps.value++
+      delay += delayIncrement
+      if (delay >= maxDelay) {
+        clearTimeout(timeout)
+        timeout = undefined
+      } else {
+        timeout = window.setTimeout(highlightLoop, delay)
+      }
     }
-  }, 100)
+  }
+
+  highlightLoop()
 }
 </script>
 
