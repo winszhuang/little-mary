@@ -1,7 +1,6 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-
 :root {
   --grid-size: 9; /* Default grid size */
   --cell-size: 50px; /* Default cell size */
@@ -20,6 +19,8 @@ body {
   display: grid;
   grid-template-columns: repeat(var(--grid-size), var(--cell-size));
   grid-template-rows: repeat(var(--grid-size), var(--cell-size));
+  gap: 1px; /* Optional: space between the cells */
+  position: relative;
 }
 
 .grid-item {
@@ -28,4 +29,11 @@ body {
   width: var(--cell-size);
   height: var(--cell-size);
   box-sizing: border-box; /* Ensure border is included in the element's total width and height */
+}
+
+.hollow {
+  grid-column: 2 / span calc(var(--grid-size) - 2);
+  grid-row: 2 / span calc(var(--grid-size) - 2);
+  background-color: transparent;
+  border: none;
 }
