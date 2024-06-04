@@ -2,9 +2,6 @@
 @tailwind components;
 @tailwind utilities;
 
-:root {
-  --grid-size: 9; /* Default grid size */
-}
 
 body {
   display: flex;

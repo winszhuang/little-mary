@@ -9,10 +9,12 @@
 </template>
 
 <script lang="ts" setup>
-import { ref, computed } from 'vue'
+import { computed } from 'vue'
 import GridItem from './components/GridItem.vue'
+import gridSize, { setGridSize } from './config/config'
 
-const gridSize = ref(9)
+// Set initial grid size
+setGridSize(10)
 
 const gridItems = computed(() => {
   const items = []
